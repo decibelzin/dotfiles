@@ -1,0 +1,97 @@
+configuration {
+    modi: "drun,run,window";
+    show-icons: true;
+    icon-theme: "Papirus-Dark";
+    display-drun: "❯";
+    display-run: "❯ run";
+    display-window: "❯ janelas";
+    drun-display-format: "{name}";
+
+    /* Busca só no nome, tipo de app e palavras-chave (não no comando: o do
+       Spotify tem "terminal" no caminho) e põe o mais parecido primeiro */
+    drun-match-fields: "name,generic,keywords";
+    sort: true;
+    sorting-method: "fzf";
+
+    /* Ctrl+A apaga a busca toda (o rofi não tem "selecionar tudo";
+       por padrão Ctrl+A só levava o cursor pro início) */
+    kb-move-front: "";
+    kb-clear-line: "Control+a,Control+w";
+
+    /* Hover: o item embaixo do mouse fica selecionado, e um clique já abre */
+    hover-select: true;
+    me-select-entry: "";
+    me-accept-entry: "MousePrimary";
+}
+
+/* Visual do terminal (kitty): vidro escuro (o Hyprland desfoca atrás), borda
+   fina clarinha, fonte JetBrains Mono e o prompt ❯ do starship */
+* {
+    bg:      #0c0f14b3;
+    glass:   #d8dee90d;
+    glass2:  #d8dee914;
+    edge:    #d8dee921;
+    text:    #eceff4;
+    sub:     #8a93a5;
+    faint:   #4c566a;
+    frost:   #88c0d0;
+
+    font: "JetBrainsMono Nerd Font 12";
+    background-color: transparent;
+    text-color: @text;
+    border: 0;
+}
+
+window {
+    width: 820px;
+    background-color: @bg;
+    border: 1px;
+    border-color: @edge;
+    border-radius: 14px;
+    padding: 22px 24px;
+}
+
+mainbox { spacing: 18px; border: 0px; children: [ inputbar, listview ]; }
+
+/* Busca como o prompt do terminal: ❯ em azul, texto branco, contador discreto */
+inputbar {
+    background-color: @glass;
+    border: 1px;
+    border-color: @edge;
+    border-radius: 10px;
+    padding: 13px 18px;
+    spacing: 12px;
+    children: [ prompt, entry, num-filtered-rows ];
+}
+prompt { text-color: @frost; font: "JetBrainsMono Nerd Font Bold 13"; vertical-align: 0.5; }
+entry {
+    text-color: @text;
+    font: "JetBrainsMono Nerd Font 13";
+    placeholder: "buscar...";
+    placeholder-color: @faint;
+    cursor: text;
+    cursor-color: @frost;
+    vertical-align: 0.5;
+}
+num-filtered-rows { text-color: @sub; vertical-align: 0.5; font: "JetBrainsMono Nerd Font 11"; }
+
+listview {
+    lines: 8;
+    columns: 1;
+    spacing: 4px;
+    scrollbar: false;
+    fixed-height: true;
+    border: 0px;
+}
+
+/* Itens: sem caixa; o selecionado ganha só um vidro claro sutil */
+element {
+    padding: 9px 14px;
+    border-radius: 9px;
+    spacing: 14px;
+}
+/* text-color explícito: sem ele vale o do tema padrão do rofi (azul-escuro, feito pra fundo claro) */
+element normal.normal, element alternate.normal { background-color: transparent; text-color: @text; }
+element selected.normal { background-color: @glass2; text-color: @text; }
+element-icon { size: 24px; vertical-align: 0.5; }
+element-text { text-color: inherit; vertical-align: 0.5; highlight: bold #88c0d0; }

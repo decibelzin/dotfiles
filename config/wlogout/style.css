@@ -1,0 +1,39 @@
+/* Nord Escuro · wlogout */
+* {
+    background-image: none;
+    box-shadow: none;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+window {
+    background-color: rgba(12, 15, 20, 0.75);
+}
+
+button {
+    color: #d8dee9;
+    background-color: #11141a;
+    border: 2px solid #2a303b;
+    border-radius: 16px;
+    margin: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 22%;
+}
+
+button:focus, button:active, button:hover {
+    background-color: #1a1e26;
+    border-color: #88c0d0;
+    color: #88c0d0;
+    outline-style: none;
+}
+
+#shutdown:hover, #shutdown:focus { border-color: #bf616a; color: #bf616a; }
+
+#lock      { background-image: url("/usr/share/wlogout/icons/lock.png"); }
+#logout    { background-image: url("/usr/share/wlogout/icons/logout.png"); }
+#suspend   { background-image: url("/usr/share/wlogout/icons/suspend.png"); }
+#hibernate { background-image: url("/usr/share/wlogout/icons/hibernate.png"); }
+#reboot    { background-image: url("/usr/share/wlogout/icons/reboot.png"); }
+#shutdown  { background-image: url("/usr/share/wlogout/icons/shutdown.png"); }

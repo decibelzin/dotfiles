@@ -1,0 +1,18 @@
+[Desktop Entry]
+# Cópia nossa (tem prioridade sobre a do sistema): o kitty aparece como "Terminal" no rofi
+Name=Terminal
+GenericName=kitty
+Keywords=terminal;kitty;shell;prompt;console;cli;
+Version=1.0
+Type=Application
+Comment=Fast, feature-rich, GPU based terminal
+TryExec=kitty
+StartupNotify=true
+Exec=kitty
+Icon=kitty
+Categories=System;TerminalEmulator;
+X-TerminalArgExec=--
+X-TerminalArgTitle=--title
+X-TerminalArgAppId=--class
+X-TerminalArgDir=--working-directory
+X-TerminalArgHold=--hold

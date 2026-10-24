@@ -1,0 +1,54 @@
+
+@import 'colors.css';
+/* ── Barra de título no estilo do sistema (vidro + bolinhas) ──
+   Usada pelo GNOME Terminal (que tem o botão + de nova aba). */
+headerbar, .titlebar {
+    background: rgba(12, 15, 20, 0.35);
+    background-image: none;
+    border: none;
+    border-bottom: 1px solid rgba(216, 222, 233, 0.08);
+    box-shadow: none;
+    min-height: 34px;
+    padding: 0 10px;
+}
+headerbar .title { color: #d8dee9; font-family: "JetBrainsMono Nerd Font"; font-size: 10pt; font-weight: 600; }
+headerbar .subtitle { color: #9aa5b8; }
+
+/* Botões normais (+, buscar, menu): vidro só no hover */
+headerbar button:not(.titlebutton) {
+    background: transparent;
+    background-image: none;
+    border: 1px solid transparent;
+    box-shadow: none;
+    border-radius: 8px;
+    color: #d8dee9;
+    min-height: 24px;
+    min-width: 24px;
+    padding: 2px 6px;
+}
+headerbar button:not(.titlebutton):hover {
+    background: rgba(216, 222, 233, 0.10);
+    border-color: rgba(216, 222, 233, 0.14);
+    color: #88c0d0;
+}
+headerbar button:not(.titlebutton):active,
+headerbar button:not(.titlebutton):checked { background: rgba(216, 222, 233, 0.16); color: #88c0d0; }
+
+/* Minimizar / maximizar / fechar = bolinhas, igual às outras janelas */
+headerbar button.titlebutton {
+    background-image: none;
+    border: none;
+    box-shadow: none;
+    border-radius: 50%;
+    min-width: 14px;
+    min-height: 14px;
+    padding: 0;
+    margin: 0 4px;
+    color: transparent;
+    -gtk-icon-shadow: none;
+}
+headerbar button.titlebutton image { -gtk-icon-transform: scale(0.7); }
+headerbar button.titlebutton:hover { color: #0c0f14; }
+headerbar button.titlebutton.minimize { background: #ebcb8b; }
+headerbar button.titlebutton.maximize { background: #a3be8c; }
+headerbar button.titlebutton.close    { background: #bf616a; }

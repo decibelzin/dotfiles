@@ -1,0 +1,56 @@
+/* Topo do Firefox (abas, endereço, favoritos) com o mesmo vidro das
+   barras do sistema: escuro translúcido, desfocado pelo Hyprland,
+   bordas finas clarinhas. Pra desfazer: apague esta pasta "chrome". */
+
+#main-window { background: transparent !important; }
+
+#navigator-toolbox {
+    background: rgba(12, 15, 20, 0.35) !important;
+    border-bottom: 1px solid rgba(216, 222, 233, 0.08) !important;
+    --toolbar-bgcolor: transparent !important;
+    --tabs-border-color: transparent !important;
+}
+#TabsToolbar, #nav-bar, #PersonalToolbar, #titlebar {
+    background: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Abas: só a selecionada ganha placa de vidro */
+.tab-background {
+    border-radius: 8px !important;
+    border: 1px solid transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+.tab-background:is([selected], [multiselected]) {
+    background: rgba(216, 222, 233, 0.10) !important;
+    border-color: rgba(216, 222, 233, 0.14) !important;
+}
+.tabbrowser-tab:hover > .tab-stack > .tab-background:not([selected]) {
+    background: rgba(216, 222, 233, 0.06) !important;
+}
+.tab-label { color: #d8dee9 !important; }
+.tabbrowser-tab[selected] .tab-label { color: #88c0d0 !important; }
+
+/* Barra de endereço */
+#urlbar-background {
+    background: rgba(216, 222, 233, 0.07) !important;
+    border: 1px solid rgba(216, 222, 233, 0.08) !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+}
+#urlbar[focused] > #urlbar-background,
+#urlbar[open] > #urlbar-background {
+    background: rgba(12, 15, 20, 0.85) !important;
+    border-color: rgba(136, 192, 208, 0.45) !important;
+}
+#urlbar-input { color: #d8dee9 !important; }
+
+/* Botões da barra: vidro só no hover */
+toolbarbutton:hover > .toolbarbutton-icon,
+toolbarbutton:hover > .toolbarbutton-badge-stack,
+#PersonalToolbar toolbarbutton:hover {
+    background: rgba(216, 222, 233, 0.10) !important;
+}

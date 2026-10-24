@@ -1,0 +1,78 @@
+# ── Nord Escuro · starship ──
+add_newline = false
+palette = "nord_escuro"
+
+format = """
+[╭─](border)$os$username$directory$git_branch$git_status$python$nodejs$rust$golang$cmd_duration
+[╰─](border)$character"""
+
+[palettes.nord_escuro]
+border = "#2a303b"
+text   = "#d8dee9"
+sub    = "#9aa5b8"
+frost1 = "#88c0d0"
+frost2 = "#81a1c1"
+frost4 = "#5e81ac"
+green  = "#a3be8c"
+yellow = "#ebcb8b"
+red    = "#bf616a"
+
+[os]
+disabled = false
+style = "frost1"
+format = "[$symbol ]($style)"
+
+[os.symbols]
+Kali = ""
+Linux = ""
+
+[username]
+show_always = true
+style_user = "bold frost2"
+style_root = "bold red"
+format = "[$user]($style) "
+
+[directory]
+style = "bold frost1"
+format = "[ $path]($style)[$read_only]($read_only_style) "
+truncation_length = 3
+truncation_symbol = "…/"
+read_only = " "
+
+[git_branch]
+symbol = " "
+style = "frost4"
+format = "[$symbol$branch]($style) "
+
+[git_status]
+style = "yellow"
+format = "[$all_status$ahead_behind]($style) "
+
+[python]
+symbol = " "
+style = "yellow"
+format = "[$symbol$version( \\($virtualenv\\))]($style) "
+
+[nodejs]
+symbol = " "
+style = "green"
+format = "[$symbol$version]($style) "
+
+[rust]
+symbol = " "
+style = "red"
+format = "[$symbol$version]($style) "
+
+[golang]
+symbol = " "
+style = "frost1"
+format = "[$symbol$version]($style) "
+
+[cmd_duration]
+min_time = 2000
+style = "sub"
+format = "[ $duration]($style)"
+
+[character]
+success_symbol = "[❯](bold frost1)"
+error_symbol = "[❯](bold red)"

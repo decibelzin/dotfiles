@@ -1,0 +1,90 @@
+/* Nord Escuro */
+@define-color bg      #0c0f14;
+@define-color base    #11141a;
+@define-color surface #1a1e26;
+@define-color border  #2a303b;
+@define-color text    #d8dee9;
+@define-color sub     #9aa5b8;
+@define-color frost1  #88c0d0;
+@define-color frost2  #81a1c1;
+@define-color frost4  #5e81ac;
+@define-color green   #a3be8c;
+@define-color yellow  #ebcb8b;
+@define-color red     #bf616a;
+
+* {
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 0;
+    border: none;
+}
+
+/* Vidro: fundo translúcido (o Hyprland desfoca o que está atrás) + borda clarinha */
+window#waybar {
+    background: alpha(@base, 0.35);
+    border: 1px solid alpha(@text, 0.14);
+    border-radius: 12px;
+    color: @text;
+}
+
+tooltip {
+    background: alpha(@base, 0.85);
+    border: 1px solid @frost4;
+    border-radius: 10px;
+}
+
+#custom-logo {
+    color: @frost1;
+    font-size: 16px;
+    padding: 0 12px 0 14px;
+}
+
+#workspaces button {
+    color: @border;
+    padding: 0 6px;
+    background: transparent;
+}
+#workspaces button.active { color: @frost1; }
+#workspaces button:hover {
+    color: @frost2;
+    background: alpha(@text, 0.10);
+    border-radius: 8px;
+}
+
+#window { color: @sub; padding-left: 8px; }
+
+#clock {
+    color: @frost1;
+    font-weight: 800;
+    padding: 0 14px;
+}
+
+#cpu, #memory, #pulseaudio, #backlight, #network, #bluetooth, #battery, #tray,
+#idle_inhibitor, #custom-nightlight, #custom-power {
+    background: alpha(@text, 0.07);
+    border: 1px solid alpha(@text, 0.08);
+    border-radius: 8px;
+    margin: 5px 0;
+    padding: 0 10px;
+    color: @text;
+}
+#tray { margin-right: 6px; }
+
+#cpu        { color: @frost2; }
+#memory     { color: @frost1; }
+#pulseaudio { color: @frost2; }
+#backlight  { color: @yellow; }
+#network    { color: @frost1; }
+#battery    { color: @green; }
+#battery.warning  { color: @yellow; }
+#battery.critical { color: @red; }
+#pulseaudio.muted, #network.disconnected { color: @border; }
+
+#bluetooth          { color: @frost2; }
+#bluetooth.off, #bluetooth.disabled { color: @border; }
+#idle_inhibitor     { color: @sub; }
+#idle_inhibitor.activated { color: @yellow; }
+#custom-nightlight  { color: @yellow; }
+#custom-power       { color: @red; margin-right: 6px; padding: 0 12px; }
+#custom-power:hover { background: @red; color: @bg; }

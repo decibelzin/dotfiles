@@ -1,0 +1,155 @@
+--- a/hyprbars/barDeco.cpp
++++ b/hyprbars/barDeco.cpp
+@@ -122,6 +122,15 @@
+     return true;
+ }
+ 
++bool CHyprBar::buttonVisible(const SHyprButton& b) {
++    if (!b.classes)
++        return true;
++    const auto PWINDOW = m_pWindow.lock();
++    if (!PWINDOW)
++        return true;
++    return std::regex_search(PWINDOW->m_class, *b.classes);
++}
++
+ void CHyprBar::onMouseButton(Event::SCallbackInfo& info, IPointer::SButtonEvent e) {
+     if (!inputIsValid())
+         return;
+@@ -281,12 +290,20 @@
+     float offset = barPadding;
+ 
+     for (auto& b : g_pGlobalState->buttons) {
++        if (!buttonVisible(b))
++            continue;
+         const auto BARBUF     = Vector2D{(int)assignedBoxGlobal().w, barHeight};
+         Vector2D   currentPos = Vector2D{(BUTTONSRIGHT ? BARBUF.x - barButtonPadding - b.size - offset : offset), (BARBUF.y - b.size) / 2.0}.floor();
+ 
+         if (VECINRECT(COORDS, currentPos.x, currentPos.y, currentPos.x + b.size + barButtonPadding, currentPos.y + b.size)) {
+             // hit on close
+-            g_pKeybindManager->m_dispatchers["exec"](b.cmd);
++            std::string cmd = b.cmd;
++            if (const auto PW = m_pWindow.lock()) {
++                const auto ADDR = std::format("0x{:x}", (uintptr_t)PW.get());
++                for (size_t p = cmd.find("{addr}"); p != std::string::npos; p = cmd.find("{addr}", p + ADDR.size()))
++                    cmd.replace(p, 6, ADDR);
++            }
++            g_pKeybindManager->m_dispatchers["exec"](cmd);
+             return true;
+         }
+ 
+@@ -306,6 +323,8 @@
+ 
+     float      buttonSizes = BARBUTTONPADDING;
+     for (auto& b : g_pGlobalState->buttons) {
++        if (!buttonVisible(b))
++            continue;
+         buttonSizes += b.size + BARBUTTONPADDING;
+     }
+ 
+@@ -329,6 +348,8 @@
+     size_t count          = 0;
+ 
+     for (const auto& button : g_pGlobalState->buttons) {
++        if (!buttonVisible(button))
++            continue;
+         const float buttonSpace = (button.size + barButtonPadding) * scale;
+         if (availableSpace >= buttonSpace) {
+             count++;
+@@ -351,8 +372,12 @@
+     const bool INVALIDATEICONS = m_bButtonsDirty || m_bWindowSizeChanged;
+ 
+     int        offset = BARPADDING * scale;
+-    for (size_t i = 0; i < visibleCount; ++i) {
++    size_t     shown = 0;
++    for (size_t i = 0; i < g_pGlobalState->buttons.size() && shown < visibleCount; ++i) {
+         auto&      button           = g_pGlobalState->buttons[i];
++        if (!buttonVisible(button))
++            continue;
++        shown++;
+         const auto scaledButtonSize = button.size * scale;
+         const auto scaledButtonsPad = BARBUTTONPADDING * scale;
+ 
+@@ -390,8 +415,12 @@
+     int        offset        = BARPADDING * scale;
+     float      noScaleOffset = BARPADDING;
+ 
+-    for (size_t i = 0; i < visibleCount; ++i) {
++    size_t     shown = 0;
++    for (size_t i = 0; i < g_pGlobalState->buttons.size() && shown < visibleCount; ++i) {
+         auto&      button           = g_pGlobalState->buttons[i];
++        if (!buttonVisible(button))
++            continue;
++        shown++;
+         const auto scaledButtonSize = button.size * scale;
+         const auto scaledButtonsPad = BARBUTTONPADDING * scale;
+ 
+@@ -561,6 +590,8 @@
+ 
+         float      buttonSizes = BARBUTTONPADDING;
+         for (auto& b : g_pGlobalState->buttons) {
++        if (!buttonVisible(b))
++            continue;
+             buttonSizes += b.size + BARBUTTONPADDING;
+         }
+ 
+@@ -676,6 +707,8 @@
+     const auto COORDS = cursorRelativeToBar();
+ 
+     for (auto& b : g_pGlobalState->buttons) {
++        if (!buttonVisible(b))
++            continue;
+         const auto BARBUF     = Vector2D{(int)assignedBoxGlobal().w, HEIGHT};
+         Vector2D   currentPos = Vector2D{(BUTTONSRIGHT ? BARBUF.x - BARBUTTONPADDING - b.size - offset : offset), (BARBUF.y - b.size) / 2.0}.floor();
+ 
+--- a/hyprbars/barDeco.hpp
++++ b/hyprbars/barDeco.hpp
+@@ -49,6 +49,7 @@
+     PHLWINDOW                          getOwner();
+ 
+     void                               updateRules();
++    bool                               buttonVisible(const SHyprButton& b);
+     void                               onConfigReloaded();
+ 
+     WP<CHyprBar>                       m_self;
+--- a/hyprbars/main.cpp
++++ b/hyprbars/main.cpp
+@@ -182,6 +182,18 @@
+         button.cmd = lua_tostring(L, -1);
+     }
+ 
++    {
++        Hyprutils::Utils::CScopeGuard x([L] { lua_pop(L, 1); });
++
++        lua_getfield(L, 1, "classes");
++
++        if (lua_isstring(L, -1)) {
++            try {
++                button.classes = std::regex(lua_tostring(L, -1));
++            } catch (...) { return Config::Lua::Bindings::Internal::configError(L, "add_button: invalid classes regex"); }
++        }
++    }
++
+     g_pGlobalState->buttons.push_back(std::move(button));
+ 
+     for (auto& b : g_pGlobalState->bars) {
+--- a/hyprbars/globals.hpp
++++ b/hyprbars/globals.hpp
+@@ -7,6 +7,8 @@
+ #include <hyprland/src/config/values/types/StringValue.hpp>
+ #include <hyprland/src/config/values/types/ColorValue.hpp>
+ #include <hyprland/src/config/values/types/FontWeightValue.hpp>
++#include <regex>
++#include <optional>
+ 
+ inline HANDLE PHANDLE = nullptr;
+ 
+@@ -18,6 +20,8 @@
+     float                size    = 10;
+     std::string          icon    = "";
+     SP<Render::ITexture> iconTex;
++    // só aparece em janelas cuja classe bate com esta regex (vazio = todas)
++    std::optional<std::regex> classes;
+ };
+ 
+ class CHyprBar;
