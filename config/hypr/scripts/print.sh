@@ -9,5 +9,5 @@ case "$1" in
     editar) area=$(slurp) || exit 0; grim -g "$area" - | swappy -f - ; exit 0 ;;
     *)      area=$(slurp) || exit 0; grim -g "$area" "$arq" ;;
 esac
-wl-copy < "$arq"
+wl-copy --type image/png < "$arq"
 notify-send -i "$arq" "Print salvo" "Copiado pra área de transferência"
